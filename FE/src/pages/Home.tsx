@@ -1,52 +1,40 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import ExchangeButton from "../components/ExchangeButton";
 import RateDisplay from "../components/RateDisplay";
 import CurrencySelector from "../components/CurrentSelector";
-// import HistoryList from "../components/HistoryList";
-// import { getExchangeRate, saveRate, getHistory } from "../api/exchangeApi";
 
 export default function Home() {
   const [currency, setCurrency] = useState("USD");
-  const [rate, setRate] = useState(null);
-  const [history, setHistory] = useState([]);
+  const [rate, setRate] = useState<number | null>(null);
 
-  //   const fetchRate = async () => {
-  //     const res = await getExchangeRate(currency);
-  //     setRate(res.data.rate);
-  //   };
+  const handleExchange = async () => {
+    // MOCK DATA (sau này thay bằng API)
+    const mockRates: Record<string, number> = {
+      USD: 0.0067,
+      VND: 162,
+      PHP: 0.38,
+      IDR: 105,
+      CAD: 0.009,
+      SGD: 0.0091,
+    };
 
-  //   const fetchHistory = async () => {
-  //     const res = await getHistory();
-  //     setHistory(res.data);
-  //   };
-
-  //   const handleSave = async () => {
-  //     await saveRate({ currency, rate });
-  //     fetchHistory();
-  //   };
-
-  //   useEffect(() => {
-  //     fetchRate();
-  //   }, [currency]);
-
-  //   useEffect(() => {
-  //     fetchHistory();
-  //   }, []);
+    setRate(mockRates[currency]);
+  };
 
   return (
-    <div className="max-w-xl mx-auto p-6 space-y-4">
-      <h1 className="text-2xl font-bold">JPY Exchange Rate Viewer</h1>
+    <div style={{ padding: 20 }}>
+      <h1>JPY Exchange Rate Viewer</h1>
 
-      <CurrencySelector value={currency} onChange={setCurrency} />
+      <CurrencySelector currency={currency} onChange={setCurrency} />
+
+      <br />
+
+      <ExchangeButton onClick={handleExchange} />
+
+      <br />
+      <br />
+
       <RateDisplay rate={rate} currency={currency} />
-
-      <button
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-        // onClick={handleSave}
-      >
-        Save rate
-      </button>
-
-      {/* <HistoryList history={history} /> */}
     </div>
   );
 }
