@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ExchangeButton from "../components/ExchangeButton";
 import RateDisplay from "../components/RateDisplay";
 import CurrencySelector from "../components/CurrentSelector";
@@ -7,6 +7,8 @@ import {
   getHistory,
   saveExchangeRate,
 } from "../api/exchangeApi";
+
+import HistoryViewer from "../components/HistoryViewer";
 
 export default function Home() {
   const [currency, setCurrency] = useState("USD");
@@ -55,6 +57,21 @@ export default function Home() {
     setHistory(data);
   };
 
+  useEffect(() => {
+    // Khi component load lần đầu, lấy dữ liệu history
+    const fetchHistory = async () => {
+      try {
+        const data = await getHistory();
+        setHistory(data);
+      } catch (error) {
+        console.error("Failed to fetch history", error);
+        alert("Could not load history. Please try again later.");
+      }
+    };
+
+    fetchHistory();
+  }, []);
+
   return (
     <div style={{ padding: 20 }}>
       <h1>JPY Exchange Rate Viewer</h1>
@@ -73,6 +90,9 @@ export default function Home() {
       <button onClick={handleSave} disabled={rate === null}>
         Save
       </button>
+
+       {/* Hiển thị lịch sử tỷ giá */}
+      <HistoryViewer history={history} />
     </div>
   );
 }
